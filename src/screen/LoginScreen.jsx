@@ -30,6 +30,10 @@ const LoginScreen = () => {
     navigation.navigate("Login");
   };
 
+  const handleFeedScreen = () => {
+    navigation.navigate("FeedScreen");
+  };
+
 
 
   return (
@@ -79,7 +83,7 @@ const LoginScreen = () => {
         Forget your password?
       </Text>
       <View style={styles.signInButtonContainer}>
-        <Text style={styles.signIn}>Sign in</Text>
+        <Text style={styles.signIn} onPress={handleFeedScreen}>Sign in</Text>
         <LinearGradient
           // Button Linear Gradient
           colors={["#F97794", "#623AA2"]}
