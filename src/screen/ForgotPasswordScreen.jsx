@@ -14,17 +14,6 @@ import { useNavigation } from "@react-navigation/native";
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
 
-  const handleRegister = () => {
-    navigation.navigate("SignUp");
-  };
-
-  const handleLogin = () => {
-    navigation.navigate("Login");
-  };
-
-  const handleForgotPassword = () => {
-    navigation.navigate("ForgotPassword");
-  };
 
   const handleOtptoLogin = () => {
     navigation.navigate("Login");

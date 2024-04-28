@@ -9,16 +9,11 @@ import React from "react";
 import { Image } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Entypo from "@expo/vector-icons/Entypo";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
-
-  const handleRegister = () => {
-    navigation.navigate("SignUp");
-  };
 
   const handleLogin = () => {
     navigation.navigate("Login");

@@ -18,20 +18,12 @@ const LoginScreen = () => {
     navigation.navigate("SignUp");
   };
 
-  const handleLogin = () => {
-    navigation.navigate("Login");
-  };
-
   const handleForgotPassword = () => {
     navigation.navigate("ForgotPassword");
   };
 
-  const handleOtptoLogin = () => {
-    navigation.navigate("Login");
-  };
-
-  const handleFeedScreen = () => {
-    navigation.navigate("FeedScreen");
+  const handleHomeScreen = () => {
+    navigation.navigate("HomeScreen");
   };
 
 
@@ -83,7 +75,7 @@ const LoginScreen = () => {
         Forget your password?
       </Text>
       <View style={styles.signInButtonContainer}>
-        <Text style={styles.signIn} onPress={handleFeedScreen}>Sign in</Text>
+        <Text style={styles.signIn} onPress={handleHomeScreen}>Sign in</Text>
         <LinearGradient
           // Button Linear Gradient
           colors={["#F97794", "#623AA2"]}
