@@ -1,29 +1,22 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
-
-
 import SignUpScreen from './src/screen/SignUpScreen';
 import LoginScreen from './src/screen/LoginScreen';
-
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import ForgotPasswordScreen from './src/screen/ForgotPasswordScreen';
-
 import FeedScreen from './src/screen/FeedScreen';
 import CourseScreen from './src/screen/CourseScreen';
 import ProfileScreen from './src/screen/ProfileScreen';
 import TaskScreen from './src/screen/TaskScreen';
-import MessageScreen from './src/screen/MessageScreen';
-
-
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import EditScreen from './src/screen/EditScreen';
+import PostScreen from './src/screen/PostScreen';
+import StuTaskScreen from './src/screen/StuTaskScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,7 +47,7 @@ function HomeScreen () {
       />
       <Tab.Screen
         name="Post"
-        component={MessageScreen}
+        component={PostScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="plus-square-o" size={36} color="#623d85" />
@@ -95,7 +88,6 @@ const App = () => {
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="EditScreen" component={EditScreen}/>
         <Stack.Screen name="HomeScreen" component={HomeScreen}/>
-
       </Stack.Navigator>
     </NavigationContainer>
   )

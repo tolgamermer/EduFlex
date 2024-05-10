@@ -1,19 +1,15 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 import React from "react";
 import { Image } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import { RadioButton } from 'react-native-paper';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
+  const [value, setValue] = React.useState('student');
 
   const handleLogin = () => {
     navigation.navigate("Login");
@@ -34,6 +30,18 @@ const SignUpScreen = () => {
       <Text style={styles.description}>
         Create account using educational institutional mail address
       </Text>
+      <RadioButton.Group onValueChange={newValue => setValue(newValue)} value={value} style={{ marginBottom: 20 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20}}>
+            <Text>Instructor</Text>
+            <RadioButton value="instructor" />
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text>Student</Text>
+            <RadioButton value="student" />
+          </View>
+        </View>
+      </RadioButton.Group>
       <View style={styles.inputContainer}>
         <FontAwesome
           name={"user"}
@@ -156,10 +164,11 @@ const styles = StyleSheet.create({
   },
   signInButtonContainer: {
     flexDirection: "row",
-    marginTop: 40,
-    justifyContent: "center",
-    width: "90%",
-    justifyContent: "flex-end",
+  marginTop: 20, // Decrease this value to move the button upwards
+  justifyContent: "center",
+  width: "90%",
+  justifyContent: "flex-end",
+  margin: -10,
   },
   signIn: {
     color: "#262626",
