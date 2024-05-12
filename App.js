@@ -17,6 +17,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import EditScreen from './src/screen/EditScreen';
 import PostScreen from './src/screen/PostScreen';
 import StuTaskScreen from './src/screen/StuTaskScreen';
+import CourseDetails from './src/screen/CourseDetails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -88,6 +89,7 @@ const App = () => {
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="EditScreen" component={EditScreen}/>
         <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+        <Stack.Screen name="CourseDetails" component={CourseDetails}/>
       </Stack.Navigator>
     </NavigationContainer>
   )
