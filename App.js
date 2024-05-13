@@ -99,6 +99,7 @@ const App = () => {
         <Stack.Screen name="TaskDetailScreen" component={TaskDetailScreen} />
         <Stack.Screen name="TaskScreen" component={HomeScreen} options={{ tabBarVisible: true }} />
 
+
       </Stack.Navigator>
     </NavigationContainer>
   )
