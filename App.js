@@ -98,7 +98,7 @@ const App = () => {
         options={({route})=> ({ title: route.params.userName})} />
         <Stack.Screen name="TaskDetailScreen" component={TaskDetailScreen} />
         <Stack.Screen name="TaskScreen" component={HomeScreen} options={{ tabBarVisible: true }} />
-
+        <Stack.Screen name="CourseDetails" component={CourseDetails} />
 
       </Stack.Navigator>
     </NavigationContainer>
