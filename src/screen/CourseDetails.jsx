@@ -1,173 +1,93 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 
-const CourseDetails = () => {
+const FeedItem = ({ name, postDesc, avatar }) => (
+  <View style={styles.feedItem}>
+    <Image source={avatar} style={styles.avatar} />
+    <View style={{ flex: 1 }}>
+      <View style={styles.row}>
+        <View>
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.postDesc}>{postDesc}</Text>
+        </View>
+      </View>
+      <View style={styles.row}>
+      </View>
+    </View>
+  </View>
+);
+
+const CourseDetails = ({ route }) => {
+  const { course } = route.params;
   const navigation = useNavigation();
 
+  const [notificationClicked, setNotificationClicked] = useState(false);
+
+
+  const feedItems = [
+    { name: 'Instructor', postDesc: 'Announcement', avatar: require("../assets/USER.png") },
+    { name: 'Instructor', postDesc: 'Announcement', avatar: require("../assets/USER.png") },
+    { name: 'Instructor', postDesc: 'Announcement', avatar: require("../assets/USER.png") },
+  ];
+
   return (
-    // Course Code header
     <View>
       <SafeAreaView>
         <ScrollView>
-          <View
-            style={{
-              marginHorizontal: 12,
-              flexDirection: "row",
-              justifyContent: "center",
-              borderBottomWidth: 1,
-              borderBottomColor: "#623d85",
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 5,
-              }}
-            >
-              <MaterialIcons
-                name="keyboard-arrow-left"
-                size={32}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+              <MaterialIcons name="keyboard-arrow-left" size={32} color="#623d85" />
+            </TouchableOpacity>
+            <Text style={styles.headerText}>{course.code}</Text>
+            <TouchableOpacity onPress={() => setNotificationClicked(!notificationClicked)} style={styles.rightButton}>
+              <Ionicons
+                name={notificationClicked ? "notifications-off-outline" : "notifications-outline"}
+                size={24}
                 color="#623d85"
+                style={{ marginRight: 10 }}
               />
             </TouchableOpacity>
-            <Text
-              style={{ fontSize: 28, fontWeight: "bold", color: "#623d85" }}
-            >
-              SEN4993
-            </Text>
+
           </View>
 
           <View style={styles.container}>
-            <Text style={styles.courseName}>Summer Training</Text>
-            <Text style={styles.courseDescription}>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Doloremque recusandae in temporibus odit atque totam sint, error
-              repudiandae optio a laborum distinctio illum fuga delectus nobis
-              harum sunt, sapiente quisquam?
-            </Text>
+            <Text style={styles.courseName}>{course.codeName}</Text>
+            <Text style={styles.courseDescription}>Course Description / Details</Text>
           </View>
 
           <View style={styles.postContainer}>
-            <View style={styles.feedItem}>
-              <Image
-                source={require("../assets/tolga.jpg")}
-                style={styles.avatar}
-              />
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <View>
-                    <Text style={styles.name}>Tolga</Text>
-                    <Text style={styles.postDesc}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Rerum fugit, vero soluta magni optio numquam repudiandae,
-                      officiis tempora id alias, aspernatur deserunt dolorum.
-                      Magnam soluta corrupti repellat aspernatur sit aliquam?
-                    </Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: "row" }}>
-                  <Ionicons
-                    name="chatbox-ellipses-outline"
-                    size={24}
-                    color="#73788B"
-                  />
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.feedItem}>
-              <Image
-                source={require("../assets/mehmet.jpg")}
-                style={styles.avatar}
-              />
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <View>
-                    <Text style={styles.name}>Mehmet</Text>
-                    <Text style={styles.postDesc}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Rerum fugit, vero soluta magni optio numquam repudiandae,
-                      officiis tempora id alias, aspernatur deserunt dolorum.
-                      Magnam soluta corrupti repellat aspernatur sit aliquam?
-                    </Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: "row" }}>
-                  <Ionicons
-                    name="chatbox-ellipses-outline"
-                    size={24}
-                    color="#73788B"
-                  />
-                  
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.feedItem}>
-              <Image
-                source={require("../assets/eduPost.jpg")}
-                style={styles.avatar}
-              />
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <View>
-                    <Text style={styles.name}>EduPost</Text>
-                    <Text style={styles.postDesc}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Rerum fugit, vero soluta magni optio numquam repudiandae,
-                      officiis tempora id alias, aspernatur deserunt dolorum.
-                      Magnam soluta corrupti repellat aspernatur sit aliquam?
-                    </Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: "row" }}>
-                  <Ionicons
-                    name="chatbox-ellipses-outline"
-                    size={24}
-                    color="#73788B"
-                  />
-                </View>
-              </View>
-            </View>
+            {feedItems.map((item, index) => (
+              <FeedItem key={index} {...item} />
+            ))}
           </View>
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 };
+
 export default CourseDetails;
 
 const styles = StyleSheet.create({
+  header: {
+    marginHorizontal: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#623d85",
+  },
+  backButton: {
+    top: 5,
+  },
+  headerText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: "#623d85",
+  },
   container: {
     paddingTop: 15,
     paddingBottom: 16,
@@ -194,7 +114,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "#623d85",
     textAlign: "justify",
   },
-
   feedItem: {
     backgroundColor: "#FFF",
     borderRadius: 5,
@@ -216,5 +135,13 @@ const styles = StyleSheet.create({
   },
   postDesc: {
     fontSize: 15,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  rightButton: {
+    marginRight: 10,
   },
 });

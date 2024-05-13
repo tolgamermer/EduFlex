@@ -1,28 +1,24 @@
-import { Text, View, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
-import CourseDetails from './CourseDetails';
 
 const courses = [
-  'SEN4993 - Summer Trainning',
-  'PRL3522 - Ethics of Public Relations',
-  'HUK1005 - Genel Hukuk Bilgisi',
-  'SEN4013 - Software Verification and Validation',
-  'NMD3210 - Media Literacy',
-  'GEP0432 - English for Specific Purposes',
-  'CMP4501 - Introduction to Artificcial Inteligence & Export Systems',
-  'MAT3012 - Numericial Analysis',
-  'GEP1015 - Temel İlk Yardım',
+  { code: 'SEN4993', codeName: 'Summer Trainning' },
+  { code: 'PRL3522', codeName: 'Ethics of Public Relations' },
+  { code: 'HUK1005', codeName: 'Genel Hukuk Bilgisi' },
+  { code: 'SEN4013', codeName: 'Software Verification and Validation' },
+  { code: 'NMD3210', codeName: 'Media Literacy' },
+  { code: 'GEP0432', codeName: 'English for Specific Purposes' },
+  { code: 'CMP4501', codeName: 'Introduction to Artificcial Inteligence & Export Systems' },
+  { code: 'MAT3012', codeName: 'Numericial Analysis' },
+  { code: 'GEP1015', codeName: 'Temel İlk Yardım' },
 ];
 
 const CourseScreen = () => {
 
   const navigation = useNavigation();
 
-  const handleCourseDetails = () => {
-    navigation.navigate("CourseDetails");
-  };
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -30,16 +26,17 @@ const CourseScreen = () => {
         <Text style={styles.headerTitle}> Courses </Text>
       </View>
       <ScrollView contentContainerStyle={{ paddingBottom: 20,  }}>
+      <View style={styles.outerView} >
         {courses.map((course, index) => (
-          <View  key={index} style={styles.outerView} >
-            <Pressable onPress={handleCourseDetails} style={styles.pressable}>
-              <Text  style={styles.text}>{course}</Text>
+            <TouchableOpacity key={index} style={styles.pressable} onPress={() => navigation.navigate('CourseDetails', { course })}>
+              <Text  style={styles.text}>{course.code} - {course.codeName}</Text>
               <View style={styles.iconView}>
                 <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
               </View>
-            </Pressable>
-          </View>
+            </TouchableOpacity>
+          
         ))}
+        </View>
       </ScrollView>
     </View>
   );
