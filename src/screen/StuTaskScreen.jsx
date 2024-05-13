@@ -1,6 +1,7 @@
 import React from 'react'
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Pressable, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 
 
 // Dummy data
@@ -11,6 +12,8 @@ const tasks = [
 ]
 
 const TaskScreen = () => {
+    const navigation = useNavigation();
+
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={styles.header}>
@@ -18,15 +21,15 @@ const TaskScreen = () => {
             </View>
             <View style={styles.outerView}>
                 {tasks.map((task, index) => (
-                    <Pressable key={index} style={styles.pressable}>
-                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                            <Text style={styles.title}>{task.title}</Text>
-                            <Text style={styles.description}>{task.description}</Text>
-                        </View>
-                        <View style={styles.iconView}>
-                            <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
-                        </View>
-                    </Pressable>
+                    <TouchableOpacity key={index} style={styles.pressable} onPress={() => navigation.navigate('TaskDetailScreen', { task })}>
+                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        <Text style={styles.title}>{task.title}</Text>
+                        <Text style={styles.description}>{task.description}</Text>
+                    </View>
+                    <View style={styles.iconView}>
+                        <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
+                    </View>
+                </TouchableOpacity>
                 ))}
             </View>
         </View>
