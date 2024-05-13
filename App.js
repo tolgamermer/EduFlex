@@ -20,6 +20,7 @@ import StuTaskScreen from './src/screen/StuTaskScreen';
 import MessageScreen from './src/screen/MessageScreen';
 import ChatScreen from './src/screen/ChatScreen';
 import TaskDetailScreen from './src/screen/TaskDetailScreen';
+import CourseDetails from './src/screen/CourseDetails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -97,7 +98,6 @@ const App = () => {
         options={({route})=> ({ title: route.params.userName})} />
         <Stack.Screen name="TaskDetailScreen" component={TaskDetailScreen} />
         <Stack.Screen name="TaskScreen" component={HomeScreen} options={{ tabBarVisible: true }} />
-
 
       </Stack.Navigator>
     </NavigationContainer>

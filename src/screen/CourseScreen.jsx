@@ -1,6 +1,8 @@
 import { Text, View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
+import CourseDetails from './CourseDetails';
 
 const courses = [
   'SEN4993 - Summer Trainning',
@@ -15,16 +17,23 @@ const courses = [
 ];
 
 const CourseScreen = () => {
+
+  const navigation = useNavigation();
+
+  const handleCourseDetails = () => {
+    navigation.navigate("CourseDetails");
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}> Courses </Text>
       </View>
-      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 20,  }}>
         {courses.map((course, index) => (
-          <View key={index} style={styles.outerView}>
-            <Pressable style={styles.pressable}>
-              <Text style={styles.text}>{course}</Text>
+          <View  key={index} style={styles.outerView} >
+            <Pressable onPress={handleCourseDetails} style={styles.pressable}>
+              <Text  style={styles.text}>{course}</Text>
               <View style={styles.iconView}>
                 <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
               </View>
@@ -77,7 +86,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 10,
     paddingVertical: 2,
-    borderRadius: 7
+    borderRadius: 7,
+    
   },
   pressable: {
     backgroundColor: "#8c6fb7",
@@ -100,7 +110,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 18,
     fontWeight: "600",
-    flex: 1
+    flex: 1,
+    color: "#fff",
   },
   iconView: {
     width: 35,
@@ -108,6 +119,7 @@ const styles = StyleSheet.create({
     borderBottomRadius: 7,
     backgroundColor: "white",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    borderRadius: 10,
   }
 })
