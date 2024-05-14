@@ -1,16 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native';
 const TaskScreen = () => {
-
-  const navigation = useNavigation();
-
-  const handleUploadAssignment = () => {
-    navigation.navigate("UploadAssignment");
-  };
-
-
   return (
     <View style={{ flex: 1}}>
       <View style={styles.header}>
@@ -49,7 +40,7 @@ const TaskScreen = () => {
             <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
           </View>
         </Pressable>
-        <Pressable onPress={handleUploadAssignment} style={styles.pressable}>
+        <Pressable style={styles.pressable}>
           <View style={styles.innerView}>
             <Ionicons name="desktop-outline" size={30} color="#623d85" />
           </View>
