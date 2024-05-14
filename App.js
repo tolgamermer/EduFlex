@@ -21,9 +21,6 @@ import MessageScreen from './src/screen/MessageScreen';
 import ChatScreen from './src/screen/ChatScreen';
 import TaskDetailScreen from './src/screen/TaskDetailScreen';
 import CourseDetails from './src/screen/CourseDetails';
-import { AuthProvider } from './src/contexts/AuthContext';
-import { useAuth } from './src/contexts/AuthContext';
-import MyProfileScreen from './src/screen/MyProfileScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -62,25 +59,15 @@ function HomeScreen() {
           ),
         }}
       />
-      {user.Role === 'Teacher' ? (
-        <Tab.Screen
-          name="Tasks"
-          component={TaskScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name="tasks" size={24} color="black" />
-            ),
-          }}
-        />) : (
-        <Tab.Screen
-          name="Tasks"
-          component={StuTaskScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name="tasks" size={24} color="black" />
-            ),
-          }}
-        />)}
+      <Tab.Screen
+        name="Tasks"
+        component={StuTaskScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="tasks" size={24} color="black" />
+          ),
+        }}
+      />
       <Tab.Screen
         name="Profile"
         component={MyProfileScreen}
@@ -102,21 +89,18 @@ const App = () => {
 
         <Stack.Navigator screenOptions={{ headerShown: false, }}>
 
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          <Stack.Screen name="EditScreen" component={EditScreen} />
-          <Stack.Screen name="HomeScreen" component={HomeScreen} />
-          <Stack.Screen name="MessageScreen" component={MessageScreen} />
-          <Stack.Screen name="FeedScreen" component={HomeScreen} options={{ tabBarVisible: true }} />
-          <Stack.Screen name="ChatScreen" component={ChatScreen}
-            options={({ route }) => ({ title: route.params.userName })} />
-          <Stack.Screen name="TaskDetailScreen" component={TaskDetailScreen} />
-          <Stack.Screen name="TaskScreen" component={HomeScreen} options={{ tabBarVisible: true }} />
-          <Stack.Screen name="CourseDetails" component={CourseDetails} />
-          <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: true, title: 'Profile' }} />
-          <Stack.Screen name="MyProfileScreen" component={MyProfileScreen} options={{ headerShown: true, title: 'My Profile' }} />
-
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        <Stack.Screen name="EditScreen" component={EditScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="MessageScreen" component={MessageScreen} />
+        <Stack.Screen name="FeedScreen" component={HomeScreen} options={{ tabBarVisible: true }} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} 
+        options={({route})=> ({ title: route.params.userName})} />
+        <Stack.Screen name="TaskDetailScreen" component={TaskDetailScreen} />
+        <Stack.Screen name="TaskScreen" component={HomeScreen} options={{ tabBarVisible: true }} />
+        <Stack.Screen name="CourseDetails" component={CourseDetails} />
 
         </Stack.Navigator>
       </NavigationContainer>
