@@ -5,14 +5,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Image } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import axios from 'axios';  // Make sure to import axios
+import { useAuth } from '../contexts/AuthContext'; // Context'i import edin
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const [username, serUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const { signIn } = useAuth(); // Context'ten signIn fonksiyonunu çekin
+
 
   const handleRegister = () => {
     navigation.navigate("SignUp");
@@ -22,9 +28,32 @@ const LoginScreen = () => {
     navigation.navigate("ForgotPassword");
   };
 
-  const handleHomeScreen = () => {
-    navigation.navigate("HomeScreen");
+  const handleHomeScreen = async () => {
+
+    if (!username.trim() || !password.trim()) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:8080/api/auth/signin', {
+        username: username,  // Assuming the backend expects 'username' as the email
+        password: password,
+      });
+
+      if (response.data.accessToken) {
+        signIn(response.data); // Kullanıcı bilgilerini context'e kaydet
+        // Store the received token in storage or state management
+        console.log('Login successful', response.data);
+        alert('Login successful');
+        navigation.navigate("HomeScreen");  // Navigate to HomeScreen on successful login
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Login failed: ' + (error.response?.data?.message || 'Server Error'));
+    }
   };
+
 
 
 
@@ -54,7 +83,13 @@ const LoginScreen = () => {
           color={"#9A9A9A"}
           style={styles.inputIcon}
         />
-        <TextInput style={styles.TextInput} placeholder="E-mail" />
+        <TextInput
+          style={styles.TextInput}
+          placeholder="E-mail"
+          value={username}
+          autoCapitalize="none"
+          onChangeText={serUsername}  // Update the email state on text change
+        />
       </View>
 
       <View style={styles.inputContainer}>
@@ -68,6 +103,9 @@ const LoginScreen = () => {
           style={styles.TextInput}
           placeholder="Password"
           secureTextEntry
+          autoCapitalize="none"
+          value={password}
+          onChangeText={setPassword}  // Update the password state on text change
         />
       </View>
 

@@ -1,22 +1,48 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Switch } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Switch, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 import profilePic from '../assets/mehmet.jpg';
+import { useNavigation } from "@react-navigation/native";
 
-const PostScreen = ({ onPost, onAddImage, onAddDocument }) => {
+const PostScreen = ({ onAddImage, onAddDocument }) => {
   const [isSocialMediaPost, setIsSocialMediaPost] = useState(false);
   const [postText, setPostText] = useState('');
+
+  const { user } = useAuth(); // Context'ten kullanıcı bilgisini çekin
+  const navigation = useNavigation();
+
+  console.log(user, "user")
+  const onPost = async (text, isSocialMedia) => {
+
+    if (!text.trim()) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    try {
+      const postData = {
+        userID: user.id,
+        content: text,
+      };
+      const response = await axios.post('http://localhost:8080/api/feed', postData);
+      Alert.alert("Post Success", "Your post was successfully created!");
+      navigation.navigate("FeedScreen");
+    } catch (error) {
+      console.error('Post failed:', error);
+      Alert.alert("Post Failed", "Your post could not be created.");
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image
-            style={styles.profilePic}
-            source={profilePic}
-          />
+
+          <Image source={require('../assets/USER.png')} style={styles.profilePic} />
+
           <Text style={styles.userName}>What's On your mind?</Text>
           <TouchableOpacity style={styles.postButton} onPress={() => onPost(postText, isSocialMediaPost)}>
             <Text style={styles.buttonText}>Post</Text>

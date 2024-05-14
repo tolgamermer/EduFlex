@@ -26,7 +26,7 @@ const ProfileScreen = ({ route }) => {
   const fetchUserInfo = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/auth/user/${params?.user || user?.id}`);
+      const response = await axios.get(`http://localhost:8080/api/auth/user/${user?.id}`);
       setUserInfo(response.data);
     } catch (error) {
       console.error('Kullanıcı bilgileri çekilemedi:', error);
@@ -34,12 +34,12 @@ const ProfileScreen = ({ route }) => {
       setLoading(false);
     }
   };
-  console.log(user?.id, "user?.id", params?.user)
+  console.log(user?.id, "user?.id")
   useEffect(() => {
-    if (params?.user || user?.id) {
+    if (user?.id) {
       fetchUserInfo();
     }
-  }, [params?.user, user?.id]);
+  }, [user?.id]);
 
   useEffect(() => {fetchUserInfo();}, []);
 
@@ -56,19 +56,13 @@ const ProfileScreen = ({ route }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView style={styles.container} contentContainerStyle={{ justifyContent: "center", alignItems: "center" }} showsVerticalScrollIndicator={false}>
-        <Image style={styles.userImg} source={require("../assets/USER.png")} />
+      <Image style={styles.userImg} source={require("../assets/USER.png")} />
         <Text style={styles.userName}>{userInfo.Username}</Text>
         <Text style={styles.aboutUser}>{userInfo.UniversityInfo}</Text>
         <View style={styles.userBtnWrapper}>
-          {user?.id === params?.user ? (
             <TouchableOpacity style={styles.userBtn} onPress={handleEditScreen}>
               <Text style={styles.userBtnTxt}>Edit</Text>
             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.userBtn} onPress={handleFollow}>
-              <Text style={styles.userBtnTxt}>Follow</Text>
-            </TouchableOpacity>
-          )}
           <TouchableOpacity style={styles.userBtn} >
             <Text style={styles.userBtnTxt} onPress={handleLogout}>Logout</Text>
           </TouchableOpacity>

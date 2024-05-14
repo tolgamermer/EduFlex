@@ -7,21 +7,34 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { imagesDataURL } from "../constant/data";
 import * as ImagePicker from "expo-image-picker";
+import { useAuth } from '../contexts/AuthContext';
 
 const EditScreen = ({ navigation }) => {
-  const [selectedImage, setSelectedImage] = useState(imagesDataURL[0]);
-  const [name, setName] = useState("Tolga Recep Mermer");
-  const [email, setEmail] = useState("tolgarecep.mermer@bahcesehir.edu.tr");
-  const [information, setInformation] = useState(
-    "4th grade in the Software Engineering Department of Bahcesehir University"
-  );
-  const [password, setPassword] = useState("randompassword");
-  const [university, setUniversity] = useState("Bahcesehir University");
+  const { user } = useAuth();
+  const [selectedImage, setSelectedImage] = useState(require('../assets/USER.png'));
+  const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [information, setInformation] = useState('');
+  const [password, setPassword] = useState('');
+  const [university, setUniversity] = useState('');
+  const [phone, setPhone] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      setName(user.FirstName); // Component mount edildiğinde, user bilgisi hazırsa name state'ini güncelle.
+      setEmail(user.Email);
+      setUniversity(user.UniversityInfo);
+      setLastName(user.LastName);
+      setPhone(user.Phone);
+    }
+  }, [user]);
+
 
   const handleImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -76,7 +89,7 @@ const EditScreen = ({ navigation }) => {
         >
           <TouchableOpacity onPress={handleImageSelection}>
             <Image
-              source={{ uri: selectedImage }}
+              source={require('../assets/USER.png')}
               style={{
                 height: 170,
                 width: 170,
@@ -180,7 +193,32 @@ const EditScreen = ({ navigation }) => {
               />
             </View>
           </View>
-
+          <View
+            style={{
+              flexDirection: "column",
+              marginBottom: 6,
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>Phone</Text>
+            <View
+              style={{
+                height: 44,
+                width: "100%",
+                borderColor: "rgba(84, 76, 76, 0.14)",
+                borderWidth: 1,
+                borderRadius: 4,
+                marginVertical: 6,
+                justifyContent: "center",
+                paddingLeft: 8,
+              }}
+            >
+              <TextInput
+                value={phone}
+                onChangeText={(value) => setPhone(value)}
+                editable={true}
+              />
+            </View>
+          </View>
           <View
             style={{
               flexDirection: "column",
