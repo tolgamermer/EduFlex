@@ -15,9 +15,9 @@ const TaskDetailScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.BackButton} onPress={() => navigation.navigate('TaskScreen')}>
-            <Ionicons name="arrow-back-outline" size={24} color="#73788B" />
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.BackButton} onPress={() => navigation.navigate('TaskScreen')}>
+        <Ionicons name="arrow-back-outline" size={24} color="#73788B" />
+      </TouchableOpacity>
       <Text style={styles.title}>{task.title}</Text>
       <Text style={styles.description}>{task.description}</Text>
       <View style={styles.pdfContainer}>
@@ -45,7 +45,8 @@ const TaskDetailScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 30,
+    marginTop:20,
     backgroundColor: '#ffffff',
   },
   title: {

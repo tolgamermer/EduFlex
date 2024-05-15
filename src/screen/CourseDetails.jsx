@@ -41,7 +41,7 @@ const CourseDetails = ({ route }) => {
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
               <MaterialIcons name="keyboard-arrow-left" size={32} color="#623d85" />
             </TouchableOpacity>
-            <Text style={styles.headerText}>{course.code}</Text>
+            <Text style={styles.headerText}>{course.CourseCode} - {course.CourseName}</Text>
             <TouchableOpacity onPress={() => setNotificationClicked(!notificationClicked)} style={styles.rightButton}>
               <Ionicons
                 name={notificationClicked ? "notifications-off-outline" : "notifications-outline"}
@@ -54,8 +54,8 @@ const CourseDetails = ({ route }) => {
           </View>
 
           <View style={styles.container}>
-            <Text style={styles.courseName}>{course.codeName}</Text>
-            <Text style={styles.courseDescription}>Course Description / Details</Text>
+            <Text style={styles.courseName}>{course.CourseCode}</Text>
+            <Text style={styles.courseDescription}>{course.CourseDesc}</Text>
           </View>
 
           <View style={styles.postContainer}>

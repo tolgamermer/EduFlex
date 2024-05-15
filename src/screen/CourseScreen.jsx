@@ -1,7 +1,8 @@
 import { Text, View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import axios from 'axios';
 
 const courses = [
   { code: 'SEN4993', codeName: 'Summer Trainning' },
@@ -18,24 +19,35 @@ const courses = [
 const CourseScreen = () => {
 
   const navigation = useNavigation();
+  const [courses, setCourses] = useState([]);
 
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/courses');
+        setCourses(response.data);
+      } catch (error) {
+        console.error('Failed to fetch courses:', error);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}> Courses </Text>
       </View>
-      <ScrollView contentContainerStyle={{ paddingBottom: 20,  }}>
-      <View style={styles.outerView} >
-        {courses.map((course, index) => (
+      <ScrollView contentContainerStyle={{ paddingBottom: 20, }}>
+        <View style={styles.outerView} >
+          {courses.map((course, index) => (
             <TouchableOpacity key={index} style={styles.pressable} onPress={() => navigation.navigate('CourseDetails', { course })}>
-              <Text  style={styles.text}>{course.code} - {course.codeName}</Text>
+              <Text style={styles.text}>{course.CourseCode} - {course.CourseName}</Text>
               <View style={styles.iconView}>
                 <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
               </View>
             </TouchableOpacity>
-          
-        ))}
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -84,7 +96,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 2,
     borderRadius: 7,
-    
+
   },
   pressable: {
     backgroundColor: "#8c6fb7",

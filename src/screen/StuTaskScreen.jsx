@@ -1,18 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, Pressable, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import axios from 'axios'
+import { useAuth } from '../contexts/AuthContext';
 
-
-// Dummy data
-const tasks = [
-    { title: 'HUK1005 - Midterm', description: 'Prepare to demonstrate your comprehension of the first 8 weeks material in our upcoming online midterm.' },
-    { title: 'SEN4992 - Final Report', description: 'FINAL REPORT will be submitted in pdf format. (Please submit the same file to TURNITIN assignment.)' },
-    // Add more tasks as needed
-]
 
 const TaskScreen = () => {
+    const { user } = useAuth(); // Context'ten kullanıcı bilgisini çekin
     const navigation = useNavigation();
+    const [assignments, setAssignments] = useState([]);
+
+    useEffect(() => {
+        const fetchAssignments = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/courses/${user.id}/assignments`);
+                if (response.data && response.data.length > 0) {
+                    const formattedAssignments = response.data.flatMap(item =>
+                        item.course.assignments.map(assignment => ({
+                            ...assignment,
+                            CourseName: item.course.CourseName,
+                            CourseCode: item.course.CourseCode,
+                            CourseDesc: item.course.CourseDesc
+                        }))
+                    );
+                    setAssignments(formattedAssignments);
+                }
+            } catch (err) {
+                console.error('Failed to fetch assignments:', err);
+            }
+        };
+
+        fetchAssignments();
+    }, []);
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -20,16 +40,15 @@ const TaskScreen = () => {
                 <Text style={styles.headerTitle}> Tasks </Text>
             </View>
             <View style={styles.outerView}>
-                {tasks.map((task, index) => (
+                {assignments.map((task, index) => (
                     <TouchableOpacity key={index} style={styles.pressable} onPress={() => navigation.navigate('TaskDetailScreen', { task })}>
-                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                        <Text style={styles.title}>{task.title}</Text>
-                        <Text style={styles.description}>{task.description}</Text>
-                    </View>
-                    <View style={styles.iconView}>
+                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                            <Text style={styles.title}>{task.CourseCode} - {task.AssigmentTitle}</Text>
+                            <Text style={styles.description}>{task.AssigmentDescription}</Text>
+                            <Text style={styles.description}>Due: {new Date(task.AssigmentDueDate).toLocaleDateString()}</Text>
+                        </View>
                         <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
-                    </View>
-                </TouchableOpacity>
+                    </TouchableOpacity>
                 ))}
             </View>
         </View>

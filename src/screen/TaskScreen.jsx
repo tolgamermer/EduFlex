@@ -1,20 +1,60 @@
 import React from 'react'
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Pressable, PermissionsAndroid, Platform } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native';
+import { Linking, Alert } from 'react-native';
+
 const TaskScreen = () => {
+  const navigation = useNavigation();
+
+  const handleUploadAssignment = () => {
+    navigation.navigate("UploadAssigmentScreen");
+  };
+
+  const handleCourseManagment = () => {
+    navigation.navigate("CourseManagmentScreen");
+  }
+
+  const handleCreateLecture = () => {
+    navigation.navigate("CreateLectureScreen");
+  }
+  const handleManageStudent = () => {
+    navigation.navigate("ManageStudentScreen");
+  }
+  const handleSubmitGrade = () => {
+    navigation.navigate("SubmitGradeScreen");
+  }
+
+  const handleAchievement = () => {
+    navigation.navigate("AchievementScreen");
+  }
+  const openFile = async (url) => {
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert('Error', 'Unable to open file.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'An unexpected error occurred');
+      console.error('An error occurred', error);
+    }
+  };
+
   return (
-    <View style={{ flex: 1}}>
+    <View style={{ flex: 1 }}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}> Instructor Management Screen </Text>
       </View>
       <View style={styles.buttonContainer}>
-        <Pressable style={[styles.button, styles.buttonStart]}>
+        <Pressable onPress={handleCourseManagment} style={[styles.button, styles.buttonStart]}>
           <View style={styles.innerButton}>
             <Ionicons name="library-outline" size={30} color="#623d85" />
           </View>
           <Text style={styles.buttonText}> Course Managment </Text>
         </Pressable>
-        <Pressable style={[styles.button, styles.buttonEnd]}>
+        <Pressable onPress={handleCreateLecture} style={[styles.button, styles.buttonEnd]}>
           <View style={styles.innerButton}>
             <Ionicons name="laptop-outline" size={30} color="#623d85" />
           </View>
@@ -22,16 +62,16 @@ const TaskScreen = () => {
         </Pressable>
       </View>
       <View style={styles.outerView}>
-        <Pressable style={styles.pressable}>
+        <Pressable style={styles.pressable} onPress={handleSubmitGrade}  >
           <View style={styles.innerView}>
             <Ionicons name="newspaper-outline" size={30} color="#623d85" />
           </View>
-          <Text style={styles.text}> Attendance Report</Text>
+          <Text style={styles.text}> Evaluation Entry</Text>
           <View style={styles.iconView}>
             <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
           </View>
         </Pressable>
-        <Pressable style={styles.pressable}>
+        <Pressable style={styles.pressable} onPress={handleAchievement}>
           <View style={styles.innerView}>
             <Ionicons name="star-outline" size={30} color="#623d85" />
           </View>
@@ -40,7 +80,7 @@ const TaskScreen = () => {
             <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
           </View>
         </Pressable>
-        <Pressable style={styles.pressable}>
+        <Pressable onPress={handleUploadAssignment} style={styles.pressable}>
           <View style={styles.innerView}>
             <Ionicons name="desktop-outline" size={30} color="#623d85" />
           </View>
@@ -49,11 +89,11 @@ const TaskScreen = () => {
             <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
           </View>
         </Pressable>
-        <Pressable style={styles.pressable}>
+        <Pressable style={styles.pressable} onPress={() => openFile('http://localhost:8080/api/grades/download-report')}>
           <View style={styles.innerView}>
             <Ionicons name="pencil-outline" size={30} color="#623d85" />
           </View>
-          <Text style={styles.text}> Grade Report Upload</Text>
+          <Text style={styles.text}> General Report</Text>
           <View style={styles.iconView}>
             <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
           </View>
@@ -66,11 +106,11 @@ const TaskScreen = () => {
           </View>
           <Text style={styles.buttonText}> Check Calender </Text>
         </Pressable>
-        <Pressable style={[styles.button, styles.buttonEnd]}>
+        <Pressable onPress={handleManageStudent} style={[styles.button, styles.buttonEnd]}>
           <View style={styles.innerButton}>
             <Ionicons name="people-outline" size={30} color="#623d85" />
           </View>
-          <Text style={styles.buttonText}> Mark attendance </Text>
+          <Text style={styles.buttonText}> Manage Student </Text>
         </Pressable>
       </View>
     </View>

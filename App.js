@@ -24,6 +24,12 @@ import CourseDetails from './src/screen/CourseDetails';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { useAuth } from './src/contexts/AuthContext';
 import MyProfileScreen from './src/screen/MyProfileScreen';
+import CourseManagmentScreen from './src/screen/CourseManagmentScreen';
+import UploadAssigmentScreen from './src/screen/UploadAssigmentScreen';
+import CreateLectureScreen from './src/screen/CreateLectureScreen';
+import ManageStudentScreen from './src/screen/ManageStudentScreen';
+import SubmitGradeScreen from './src/screen/SubmitGradeScreen';
+import AchievementScreen from './src/screen/AchievementScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -31,7 +37,7 @@ const Tab = createBottomTabNavigator();
 
 
 function HomeScreen() {
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen
@@ -116,7 +122,12 @@ const App = () => {
           <Stack.Screen name="CourseDetails" component={CourseDetails} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: true, title: 'Profile' }} />
           <Stack.Screen name="MyProfileScreen" component={MyProfileScreen} options={{ headerShown: true, title: 'My Profile' }} />
-
+          <Stack.Screen name="CourseManagmentScreen" component={CourseManagmentScreen} />
+          <Stack.Screen name="UploadAssigmentScreen" component={UploadAssigmentScreen} />
+          <Stack.Screen name="CreateLectureScreen" component={CreateLectureScreen} />
+          <Stack.Screen name="ManageStudentScreen" component={ManageStudentScreen} />
+          <Stack.Screen name="SubmitGradeScreen" component={SubmitGradeScreen} />
+          <Stack.Screen name="AchievementScreen" component={AchievementScreen} />
 
         </Stack.Navigator>
       </NavigationContainer>
