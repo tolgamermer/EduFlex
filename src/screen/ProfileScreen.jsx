@@ -25,6 +25,7 @@ const ProfileScreen = ({ route }) => {
   const [gradeInfo, setGradeInfo] = useState(null);
   const [userPost, setUserPost] = useState(null);
   const [userPostCount, setUserPostCount] = useState(null);
+  const [userAchievement, setUserAchievement] = useState(null);
 
   const handleItemSelection = (itemID) => {
 
@@ -89,6 +90,7 @@ const ProfileScreen = ({ route }) => {
     if (params?.user || user?.id) {
       fetchUserInfo();
       fetchPostInfo();
+      fetchAchievementInfo();
     }
   }, [params?.user, user?.id]);
 
@@ -99,7 +101,18 @@ const ProfileScreen = ({ route }) => {
     return pattern.test(url);
   };
 
-
+  const fetchAchievementInfo = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/api/achievement/user/${params?.user}`);
+      setUserAchievement(response.data);
+      console.log(response.data, "response.dataresponse.dataresponse.dataresponse.dataresponse.data")
+    } catch (error) {
+      console.error('Kullanıcı bilgileri çekilemedi');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const renderContent = () => {
     if (selectedItem === "1") {
@@ -133,8 +146,8 @@ const ProfileScreen = ({ route }) => {
       if (!gradeInfo || gradeInfo.length === 0) {
         return <Text>No grades to display.</Text>;
       }
-      if (user?.Role === "Student" &&  user?.id !== params?.user ) {
-        return <Text style={{textAlign:"center"}}>Grades are only available for instructors.</Text>;
+      if (user?.Role === "Student" && user?.id !== params?.user) {
+        return <Text style={{ textAlign: "center" }}>Grades are only available for instructors.</Text>;
       }
 
       // Render grades
@@ -172,6 +185,13 @@ const ProfileScreen = ({ route }) => {
         <Image style={styles.userImg} source={require("../assets/USER.png")} />
         <Text style={styles.userName}>{userInfo.Username}</Text>
         <Text style={styles.aboutUser}>{userInfo.UniversityInfo}</Text>
+        {userAchievement && userAchievement.length > 0 ? (
+          userAchievement.map((item, index) => (
+            <Text key={index} style={styles.achUser}>*{item.AchievementName}*</Text>
+          ))
+        ) : (
+          ''
+        )}
         <View style={styles.userBtnWrapper}>
           {user?.id === params?.user ? (
             <TouchableOpacity style={styles.userBtn} onPress={handleEditScreen}>
@@ -352,6 +372,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#C4C6CE",
     marginTop: 4,
+  },
+  achUser: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 5,
   },
 });
 

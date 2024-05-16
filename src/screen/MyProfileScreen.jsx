@@ -14,12 +14,6 @@ const checklistData = [
   { id: "2", name: "MY GRADES" },
 ];
 
-// Sample data for posts and grades
-const postsData = [
-  { id: "1", title: "Post 1", content: "This is the content of post 1." },
-  { id: "2", title: "Post 2", content: "This is the content of post 2." },
-  { id: "3", title: "Post 3", content: "This is the content of post 3." },
-];
 
 
 const ProfileScreen = ({ route }) => {
@@ -32,7 +26,7 @@ const ProfileScreen = ({ route }) => {
   const [gradeInfo, setGradeInfo] = useState(null);
   const [userPost, setUserPost] = useState(null);
   const [userPostCount, setUserPostCount] = useState(null);
-
+  const [userAchievement, setUserAchievement] = useState(null);
   const { user } = useAuth();
   const handleEditScreen = () => {
     navigation.navigate("EditScreen");
@@ -47,6 +41,19 @@ const ProfileScreen = ({ route }) => {
     fetchGradeInfo();
     fetchPostInfo();
   };
+
+  const fetchAchievementInfo = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/api/achievement/user/${user?.id}`);
+      setUserAchievement(response.data);
+      console.log(response.data, "response.dataresponse.dataresponse.dataresponse.dataresponse.data")
+    } catch (error) {
+      console.error('Kullanıcı bilgileri çekilemedi');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const fetchUserInfo = async () => {
     setLoading(true);
@@ -106,6 +113,7 @@ const ProfileScreen = ({ route }) => {
   useEffect(() => {
     fetchUserInfo();
     fetchPostInfo();
+    fetchAchievementInfo();
 
   }, []);
 
@@ -176,8 +184,15 @@ const ProfileScreen = ({ route }) => {
       <View style={styles.container}>
 
         <Image style={styles.userImg} source={require("../assets/USER.png")} />
-        <Text style={styles.userName}>{userInfo.Username}</Text>
+        <Text style={styles.userName}>{userInfo.Username} </Text>
         <Text style={styles.aboutUser}>{userInfo.UniversityInfo}</Text>
+        {userAchievement && userAchievement.length > 0 ? (
+          userAchievement.map((item, index) => (
+            <Text key={index} style={styles.achUser}>*{item.AchievementName}*</Text>
+          ))
+        ) : (
+          ''
+        )}
         <View style={styles.userBtnWrapper}>
           <TouchableOpacity style={styles.userBtn} onPress={handleEditScreen}>
             <Text style={styles.userBtnTxt}>Edit</Text>
@@ -291,6 +306,13 @@ const styles = StyleSheet.create({
     color: "#666",
     textAlign: "center",
     marginBottom: 10,
+  },
+  achUser: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 5,
   },
   userBtnWrapper: {
     flexDirection: "row",
