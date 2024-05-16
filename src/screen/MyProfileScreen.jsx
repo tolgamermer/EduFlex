@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, FlatList } from 'react-native'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, FlatList, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from "react-native";
@@ -125,7 +125,7 @@ const ProfileScreen = ({ route }) => {
     return <Text>Kullanıcı bilgisi bulunamadı.</Text>;
   }
   const handleFollow = () => {
-    console.log('Follow user', params?.user, user?.id);
+    Alert.alert('Successful', 'You are now following this user.');
   };
 
 
