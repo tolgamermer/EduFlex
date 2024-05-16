@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#ffffff",
-        marginTop: 20,
+        marginTop: 50,
     },
     header: {
         alignItems: "center",
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     headerText: {
-        fontSize: 32,
+        fontSize: 24,
         fontWeight: "bold",
         color: "#623d85"
     },

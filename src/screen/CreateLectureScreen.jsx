@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const CreateLectureScreen = () => {
   const navigation = useNavigation();
@@ -14,10 +16,29 @@ const CreateLectureScreen = () => {
   const [time, setTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [courseCode, setCourseCode] = useState('');
+  const { user } = useAuth();
 
-  const handleCreateLecture = () => {
-    Alert.alert('Lecture Created', 'Your lecture has been created successfully.');
-    navigation.goBack();
+
+  const handleCreateLecture = async () => {
+    try {
+      const formattedDate = date.toLocaleDateString('en-GB').split('/').reverse().join('-');
+      const lectureData = {
+        courseName: course,
+        teacherID: user.id,
+        courseCode: courseCode,
+        courseDesc: description,
+        lectureDate: date
+      };
+      console.log(lectureData, "lectureData")
+
+      const response = await axios.post('http://localhost:8080/api/courses/lecture', lectureData);
+      Alert.alert('Lecture Created', 'Your lecture has been created successfully.');
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error creating new course:', error);
+      Alert.alert('Error', 'There was an error creating the lecture.');
+    }
   };
 
   return (
@@ -30,19 +51,20 @@ const CreateLectureScreen = () => {
           </TouchableOpacity>
           <Text style={styles.headerText}>Create Online Lecture</Text>
         </View>
-        
+
         <View style={styles.form}>
+
           <TextInput
             style={styles.input}
-            placeholder="Lecture Title"
-            value={title}
-            onChangeText={setTitle}
+            placeholder="Course Name"
+            value={course}
+            onChangeText={setCourseName}
           />
           <TextInput
             style={styles.input}
-            placeholder="Lecture Name"
-            value={course}
-            onChangeText={setCourseName}
+            placeholder="Course Code"
+            value={courseCode}
+            onChangeText={setCourseCode}
           />
           <TextInput
             style={styles.input}
@@ -56,37 +78,21 @@ const CreateLectureScreen = () => {
               {`Date: ${date.toLocaleDateString()}`}
             </Text>
           </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowDatePicker(false);
-                if (selectedDate) {
-                  setDate(selectedDate);
-                }
-              }}
-            />
-          )}
-          <TouchableOpacity onPress={() => setShowTimePicker(true)} style={styles.datePickerButton}>
-            <Text style={styles.datePickerText}>
-              {`Time: ${time.toLocaleTimeString()}`}
-            </Text>
-          </TouchableOpacity>
-          {showTimePicker && (
-            <DateTimePicker
-              value={time}
-              mode="time"
-              display="default"
-              onChange={(event, selectedTime) => {
-                setShowTimePicker(false);
-                if (selectedTime) {
-                  setTime(selectedTime);
-                }
-              }}
-            />
-          )}
+
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) {
+                setDate(selectedDate);
+              }
+            }}
+          />
+
+
+
           <TouchableOpacity onPress={handleCreateLecture} style={styles.createButton}>
             <Text style={styles.createButtonText}>Create Lecture</Text>
           </TouchableOpacity>

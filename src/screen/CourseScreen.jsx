@@ -1,56 +1,74 @@
-import { Text, View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator,RefreshControl } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
 
-const courses = [
-  { code: 'SEN4993', codeName: 'Summer Trainning' },
-  { code: 'PRL3522', codeName: 'Ethics of Public Relations' },
-  { code: 'HUK1005', codeName: 'Genel Hukuk Bilgisi' },
-  { code: 'SEN4013', codeName: 'Software Verification and Validation' },
-  { code: 'NMD3210', codeName: 'Media Literacy' },
-  { code: 'GEP0432', codeName: 'English for Specific Purposes' },
-  { code: 'CMP4501', codeName: 'Introduction to Artificcial Inteligence & Export Systems' },
-  { code: 'MAT3012', codeName: 'Numericial Analysis' },
-  { code: 'GEP1015', codeName: 'Temel İlk Yardım' },
-];
 
 const CourseScreen = () => {
 
   const navigation = useNavigation();
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
     const fetchCourses = async () => {
+      setLoading(true);
       try {
         const response = await axios.get('http://localhost:8080/api/courses');
         setCourses(response.data);
       } catch (error) {
         console.error('Failed to fetch courses:', error);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+
       }
     };
-    fetchCourses();
-  }, []);
 
+    useEffect(() => {
+      fetchCourses();
+    }, []);
+  
+  const onRefresh = () => {
+    setRefreshing(true);
+    
+    fetchCourses();
+    setRefreshing(true);
+
+  };
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}> Courses </Text>
-      </View>
-      <ScrollView contentContainerStyle={{ paddingBottom: 20, }}>
-        <View style={styles.outerView} >
-          {courses.map((course, index) => (
-            <TouchableOpacity key={index} style={styles.pressable} onPress={() => navigation.navigate('CourseDetails', { course })}>
-              <Text style={styles.text}>{course.CourseCode} - {course.CourseName}</Text>
-              <View style={styles.iconView}>
-                <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
+    <>
+      {
+        loading ? (
+          <>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text>Loading...</Text>
+          </>
+
+        ) : (
+          <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}> Courses </Text>
+            </View>
+            <ScrollView contentContainerStyle={{ paddingBottom: 20, }}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }>
+              <View style={styles.outerView} >
+                {courses.map((course, index) => (
+                  <TouchableOpacity key={index} style={styles.pressable} onPress={() => navigation.navigate('CourseDetails', { course })}>
+                    <Text style={styles.text}>{course.CourseCode} - {course.CourseName}</Text>
+                    <View style={styles.iconView}>
+                      <Ionicons name="chevron-forward-outline" size={30} color="#623d85" />
+                    </View>
+                  </TouchableOpacity>
+                ))}
               </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-    </View>
+            </ScrollView>
+          </View>
+        )}
+    </>
   );
 };
 
