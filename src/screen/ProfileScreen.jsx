@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from "react-native";
@@ -6,6 +6,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import moment from 'moment';
+
+const checklistData = [
+  { id: "1", name: "Posts" },
+  { id: "2", name: "Grades" },
+];
 
 const ProfileScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -15,6 +21,18 @@ const ProfileScreen = ({ route }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const [selectedItem, setSelectedItem] = useState("1");
+  const [gradeInfo, setGradeInfo] = useState(null);
+  const [userPost, setUserPost] = useState(null);
+  const [userPostCount, setUserPostCount] = useState(null);
+
+  const handleItemSelection = (itemID) => {
+
+    setSelectedItem(itemID);
+    fetchGradeInfo();
+    fetchPostInfo();
+  };
+
   const handleEditScreen = () => {
     navigation.navigate("EditScreen");
   };
@@ -23,10 +41,25 @@ const ProfileScreen = ({ route }) => {
     navigation.navigate("Login");
   };
 
+
+  const fetchGradeInfo = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/api/grades/${params?.user}`);
+      setGradeInfo(response.data);
+    } catch (error) {
+      console.error('Kullanıcı bilgileri çekilemedi:', error);
+      setGradeInfo();
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
   const fetchUserInfo = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/auth/user/${params?.user || user?.id}`);
+      const response = await axios.get(`http://localhost:8080/api/auth/user/${params?.user}`);
       setUserInfo(response.data);
     } catch (error) {
       console.error('Kullanıcı bilgileri çekilemedi:', error);
@@ -34,14 +67,93 @@ const ProfileScreen = ({ route }) => {
       setLoading(false);
     }
   };
-  console.log(user?.id, "user?.id", params?.user)
+  console.log(user, "user?.id", params?.user)
+
+  const fetchPostInfo = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/api/feed/user/${params?.user}`);
+      setUserPost(response.data);
+      setUserPostCount(response.data.length)
+      console.log(response.data, "123245167412673461273412esponse.data")
+    } catch (error) {
+      console.error('Kullanıcı feed bilgileri çekilemedi:', error);
+      setUserPost();
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
   useEffect(() => {
     if (params?.user || user?.id) {
       fetchUserInfo();
+      fetchPostInfo();
     }
   }, [params?.user, user?.id]);
 
-  useEffect(() => {fetchUserInfo();}, []);
+  useEffect(() => { fetchUserInfo(); }, []);
+
+  const isImage = (url) => {
+    const pattern = /\.(jpg|jpeg|png)$/i;
+    return pattern.test(url);
+  };
+
+
+
+  const renderContent = () => {
+    if (selectedItem === "1") {
+      if (!userPost || userPost.length === 0) {
+        return <Text>No posts to display.</Text>;
+      }
+
+      // Render posts
+      return (
+        <FlatList
+          data={userPost}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemTitle}>{item?.user?.Username}</Text>
+              <Text style={styles.timestamp}>{moment(item?.timestamp).fromNow()}</Text>
+              <Text style={styles.itemContent}>{item?.content}</Text>
+              {item.imageUrl && isImage(item?.imageUrl) && (
+                <Image
+                  source={{ uri: item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:8080/${item.imageUrl}` }}
+                  style={styles.postImage}
+                  resizeMode="contain"
+                />
+              )}
+            </View>
+          )}
+        />
+      );
+    } else if (selectedItem === "2") {
+      console.log(userInfo, "userInfouserInfouserInfo")
+      if (!gradeInfo || gradeInfo.length === 0) {
+        return <Text>No grades to display.</Text>;
+      }
+      if (user?.Role === "Student" &&  user?.id !== params?.user ) {
+        return <Text style={{textAlign:"center"}}>Grades are only available for instructors.</Text>;
+      }
+
+      // Render grades
+      return (
+        <FlatList
+          data={gradeInfo}
+          keyExtractor={(item) => item.course.CourseID}
+          renderItem={({ item }) => (
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemTitle}>{item?.course?.CourseCode} - {item.course?.CourseName} </Text>
+              <Text style={styles.itemContent}>Grade: {item?.Grade}</Text>
+            </View>
+          )}
+        />
+      );
+    }
+
+    return <Text>No content to display.</Text>;
+  };
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -51,11 +163,12 @@ const ProfileScreen = ({ route }) => {
     return <Text>Kullanıcı bilgisi bulunamadı.</Text>;
   }
   const handleFollow = () => {
-    console.log('Follow user',params?.user, user?.id);
+    console.log('Follow user', params?.user, user?.id);
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <ScrollView style={styles.container} contentContainerStyle={{ justifyContent: "center", alignItems: "center" }} showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
+
         <Image style={styles.userImg} source={require("../assets/USER.png")} />
         <Text style={styles.userName}>{userInfo.Username}</Text>
         <Text style={styles.aboutUser}>{userInfo.UniversityInfo}</Text>
@@ -76,7 +189,7 @@ const ProfileScreen = ({ route }) => {
 
         <View style={styles.userInfoWrapper}>
           <View style={styles.userInfoItem}>
-            <Text style={styles.userInftoTitle}>22</Text>
+            <Text style={styles.userInftoTitle}>{userPostCount ?? 0}</Text>
             <Text style={styles.userInfoSubtitle}>Posts</Text>
           </View>
 
@@ -91,10 +204,31 @@ const ProfileScreen = ({ route }) => {
           </View>
         </View>
 
+        {/* Checklist */}
+        <View style={styles.checklistContainer}>
+          {checklistData.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.checklistItem,
+                selectedItem === item.id && styles.selectedItem,
+              ]}
+              onPress={() => handleItemSelection(item.id)}
+            >
+              <Text>{item.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Render content based on selected item */}
+        <View style={styles.contentContainer}>
+          {renderContent()}
+        </View>
 
 
-      </ScrollView>
-    </SafeAreaView>
+
+      </View>
+    </SafeAreaView >
 
   )
 }
@@ -136,11 +270,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
+    justifyContent: "center",
+    alignItems: "center"
   },
   userImg: {
     height: 150,
     width: 150,
     borderRadius: 75,
+    marginTop: 10,
   },
   userName: {
     fontSize: 18,
@@ -168,7 +305,54 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     marginHorizontal: 5,
-  }
+  },
+
+  checklistContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  checklistItem: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    margin: 5,
+  },
+  selectedItem: {
+    backgroundColor: "#d3d3d3",
+  },
+  contentContainer: {
+    width: '100%',
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  itemContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    paddingVertical: 10,
+  },
+  itemTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  itemContent: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 5,
+  },
+  postImage: {
+    width: '100%',
+    height: 70,
+    borderRadius: 5,
+    marginVertical: 16,
+  },
+  timestamp: {
+    fontSize: 11,
+    color: "#C4C6CE",
+    marginTop: 4,
+  },
 });
 
 

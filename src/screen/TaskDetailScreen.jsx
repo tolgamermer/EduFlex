@@ -15,11 +15,11 @@ const TaskDetailScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-            <TouchableOpacity style={styles.BackButton} onPress={() => navigation.navigate('TaskScreen')}>
+            <TouchableOpacity style={styles.BackButton} onPress={() => navigation.navigate('StuTaskScreen')}>
         <Ionicons name="arrow-back-outline" size={24} color="#73788B" />
       </TouchableOpacity>
-      <Text style={styles.title}>{task.title}</Text>
-      <Text style={styles.description}>{task.description}</Text>
+      <Text style={styles.title}>{task.AssigmentTitle}</Text>
+      <Text style={styles.description}>{task.AssigmentDescription}</Text>
       <View style={styles.pdfContainer}>
         {pdfUri ? (
           <WebView

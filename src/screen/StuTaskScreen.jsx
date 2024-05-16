@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
         shadowOffset: { height: 5 },
         shadowRadius: 15,
         shadowOpacity: 0.2,
-        zIndex: 10
+        zIndex: 10,
+        top:20
     },
     headerTitle: {
         fontSize: 20,

@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import moment from 'moment';
 
 // Sample data for profile checklist
 const checklistData = [
@@ -27,8 +28,10 @@ const ProfileScreen = ({ route }) => {
   const { params } = useRoute();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState("1");
   const [gradeInfo, setGradeInfo] = useState(null);
+  const [userPost, setUserPost] = useState(null);
+  const [userPostCount, setUserPostCount] = useState(null);
 
   const { user } = useAuth();
   const handleEditScreen = () => {
@@ -40,8 +43,9 @@ const ProfileScreen = ({ route }) => {
   };
 
   const handleItemSelection = (itemID) => {
-    fetchGradeInfo();
     setSelectedItem(itemID);
+    fetchGradeInfo();
+    fetchPostInfo();
   };
 
   const fetchUserInfo = async () => {
@@ -68,16 +72,42 @@ const ProfileScreen = ({ route }) => {
     try {
       const response = await axios.get(`http://localhost:8080/api/grades/${user?.id}`);
       setGradeInfo(response.data);
-      console.log(response.data, "esponse.data")
     } catch (error) {
       console.error('Kullanıcı bilgileri çekilemedi:', error);
+      setGradeInfo();
     } finally {
       setLoading(false);
     }
 
   }
 
-  useEffect(() => { fetchUserInfo(); }, []);
+  const fetchPostInfo = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/api/feed/user/${user?.id}`);
+      setUserPost(response.data);
+      setUserPostCount(response.data.length)
+      console.log(response.data, "123245167412673461273412esponse.data")
+    } catch (error) {
+      console.error('Kullanıcı feed bilgileri çekilemedi:', error);
+      setUserPost();
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
+  const isImage = (url) => {
+    const pattern = /\.(jpg|jpeg|png)$/i;
+    return pattern.test(url);
+  };
+
+
+  useEffect(() => {
+    fetchUserInfo();
+    fetchPostInfo();
+
+  }, []);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -93,20 +123,36 @@ const ProfileScreen = ({ route }) => {
 
   const renderContent = () => {
     if (selectedItem === "1") {
+      if (!userPost || userPost.length === 0) {
+        return <Text>No posts to display.</Text>;
+      }
+
       // Render posts
       return (
         <FlatList
-          data={postsData}
+          data={userPost}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.itemContainer}>
-              <Text style={styles.itemTitle}>{item.title}</Text>
-              <Text style={styles.itemContent}>{item.content}</Text>
+              <Text style={styles.itemTitle}>{item?.user?.Username}</Text>
+              <Text style={styles.timestamp}>{moment(item?.timestamp).fromNow()}</Text>
+              <Text style={styles.itemContent}>{item?.content}</Text>
+              {item.imageUrl && isImage(item?.imageUrl) && (
+                <Image
+                  source={{ uri: item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:8080/${item.imageUrl}` }}
+                  style={styles.postImage}
+                  resizeMode="contain"
+                />
+              )}
             </View>
           )}
         />
       );
     } else if (selectedItem === "2" && userInfo?.Role === "Student") {
+      if (!gradeInfo || gradeInfo.length === 0) {
+        return <Text>No grades to display.</Text>;
+      }
+
       // Render grades
       return (
         <FlatList
@@ -114,19 +160,21 @@ const ProfileScreen = ({ route }) => {
           keyExtractor={(item) => item.course.CourseID}
           renderItem={({ item }) => (
             <View style={styles.itemContainer}>
-              <Text style={styles.itemTitle}>{item.course.CourseCode} - {item.course.CourseName} </Text>
-              <Text style={styles.itemContent}>Grade: {item.Grade}</Text>
+              <Text style={styles.itemTitle}>{item?.course?.CourseCode} - {item.course?.CourseName} </Text>
+              <Text style={styles.itemContent}>Grade: {item?.Grade}</Text>
             </View>
           )}
         />
       );
     }
-    return null;
+
+    return <Text>No content to display.</Text>;
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <ScrollView style={styles.container} contentContainerStyle={{ justifyContent: "center", alignItems: "center" }} showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
+
         <Image style={styles.userImg} source={require("../assets/USER.png")} />
         <Text style={styles.userName}>{userInfo.Username}</Text>
         <Text style={styles.aboutUser}>{userInfo.UniversityInfo}</Text>
@@ -141,7 +189,7 @@ const ProfileScreen = ({ route }) => {
 
         <View style={styles.userInfoWrapper}>
           <View style={styles.userInfoItem}>
-            <Text style={styles.userInftoTitle}>22</Text>
+            <Text style={styles.userInftoTitle}>{userPostCount ?? 0}</Text>
             <Text style={styles.userInfoSubtitle}>Posts</Text>
           </View>
 
@@ -179,8 +227,7 @@ const ProfileScreen = ({ route }) => {
 
 
 
-
-      </ScrollView >
+      </View>
     </SafeAreaView >
 
   )
@@ -223,11 +270,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
+    justifyContent: "center",
+    alignItems: "center"
   },
   userImg: {
     height: 150,
     width: 150,
     borderRadius: 75,
+    marginTop: 50,
   },
   userName: {
     fontSize: 18,
@@ -291,7 +341,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     marginTop: 5,
-  }
+  },
+  postImage: {
+    width: '100%',
+    height: 70,
+    borderRadius: 5,
+    marginVertical: 16,
+  },
+  timestamp: {
+    fontSize: 11,
+    color: "#C4C6CE",
+    marginTop: 4,
+  },
 });
 
 

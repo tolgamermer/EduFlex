@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const CreateLectureScreen = () => {
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
+  const [course, setCourseName] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
@@ -15,7 +16,6 @@ const CreateLectureScreen = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
 
   const handleCreateLecture = () => {
-    // You can add logic to save the lecture details to your backend or state management here
     Alert.alert('Lecture Created', 'Your lecture has been created successfully.');
     navigation.goBack();
   };
@@ -37,6 +37,12 @@ const CreateLectureScreen = () => {
             placeholder="Lecture Title"
             value={title}
             onChangeText={setTitle}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Lecture Name"
+            value={course}
+            onChangeText={setCourseName}
           />
           <TextInput
             style={styles.input}

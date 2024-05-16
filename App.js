@@ -79,7 +79,7 @@ function HomeScreen() {
           }}
         />) : (
         <Tab.Screen
-          name="Tasks"
+          name="StuTaskScreen"
           component={StuTaskScreen}
           options={{
             tabBarIcon: ({ color, size }) => (

@@ -19,7 +19,6 @@ const FeedScreen = () => {
     setLoading(true);
     try {
       const response = await axios.get('http://localhost:8080/api/feed');
-
       const postsWithComments = await Promise.all(response.data.map(async post => {
         console.log(post, "postpostv")
         const commentsResponse = await axios.get(`http://localhost:8080/api/posts/${post.postID}/comments`);
@@ -62,13 +61,6 @@ const FeedScreen = () => {
     );
   };
 
-  // const handleComment = (postId, comment) => {
-  //   setPosts(prevPosts =>
-  //     prevPosts.map(post =>
-  //       post.id === postId ? { ...post, comments: comment } : post
-  //     )
-  //   );
-  // };
   const handleAddComment = async (postId, content) => {
     try {
       const response = await axios.post(`http://localhost:8080/api/posts/${postId}/comments`, {
@@ -177,7 +169,7 @@ const FeedScreen = () => {
           style={styles.feed}
           data={posts}
           renderItem={renderPost}
-          keyExtractor={item => item.postID.toString()}
+          keyExtractor={item => item.postID}
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}
           onRefresh={onRefresh}
