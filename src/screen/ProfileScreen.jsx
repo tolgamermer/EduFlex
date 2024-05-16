@@ -202,9 +202,7 @@ const ProfileScreen = ({ route }) => {
               <Text style={styles.userBtnTxt}>Follow</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.userBtn} >
-            <Text style={styles.userBtnTxt} onPress={handleLogout}>Logout</Text>
-          </TouchableOpacity>
+
         </View>
 
         <View style={styles.userInfoWrapper}>
